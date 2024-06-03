@@ -1,3 +1,4 @@
+// helper/helper.go
 package helper
 
 import (
@@ -13,8 +14,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// ConnectDB : This is helper function to connect mongoDB
-// If you want to export your function. You must to start upper case function name. Otherwise you won't see your function when you import that on other class.
+func SayHello() {
+	fmt.Println("Hello from the helper package!")
+}
+
 func ConnectDB() *mongo.Collection {
 	config := GetConfiguration()
 	// Set client options
@@ -34,14 +37,11 @@ func ConnectDB() *mongo.Collection {
 	return collection
 }
 
-// ErrorResponse : This is error model.
 type ErrorResponse struct {
 	StatusCode   int    `json:"status"`
 	ErrorMessage string `json:"message"`
 }
 
-// GetError : This is helper function to prepare error model.
-// If you want to export your function. You must to start upper case function name. Otherwise you won't see your function when you import that on other class.
 func GetError(err error, w http.ResponseWriter) {
 
 	log.Fatal(err.Error())
@@ -62,7 +62,6 @@ type Configuration struct {
 	ConnectionString string
 }
 
-// GetConfiguration method basically populate configuration information from .env and return Configuration model
 func GetConfiguration() Configuration {
 	err := godotenv.Load("./.env")
 
@@ -70,9 +69,24 @@ func GetConfiguration() Configuration {
 		log.Fatalf("Error loading .env file")
 	}
 
+	// Get the PORT and CONNECTION_STRING environment variables
+	port := os.Getenv("PORT")
+	connectionString := os.Getenv("CONNECTION_STRING") + "/?retryWrites=true&w=majority&appName=dev"
+
+	if port == "" {
+		log.Fatal("PORT must be set in the .env file")
+	}
+
+	if connectionString == "" {
+		log.Fatal("CONNECTION_STRING must be set in the .env file")
+	}
+
+	// For demonstration, just print the connection string
+	fmt.Println("Connection String:", connectionString)
+
 	configuration := Configuration{
-		os.Getenv("PORT"),
-		os.Getenv("CONNECTION_STRING"),
+		port,
+		connectionString,
 	}
 
 	return configuration
