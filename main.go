@@ -4,18 +4,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"zrs.user.api/helper"
+	"zrs.user.api/firebase"
 )
 
 // Connection mongoDB with helper class
 // var collection = helper.ConnectDB()
 
 // var client *mongo.Client
-
 func main() {
+	//initialize firbase
+	firebase.InitFirebase()
 	// Create a Gin router
 	router := gin.Default()
-	helper.ConnectDB()
+	// helper.ConnectDB()
 
 	// Define a route and a handler
 	router.GET("/", func(c *gin.Context) {
