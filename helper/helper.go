@@ -32,7 +32,7 @@ func ConnectDB() *mongo.Collection {
 
 	fmt.Println("Connected to MongoDB!")
 
-	collection := client.Database("go_rest_api").Collection("books")
+	collection := client.Database(config.DatabaseName).Collection("books")
 
 	return collection
 }
@@ -60,6 +60,7 @@ func GetError(err error, w http.ResponseWriter) {
 type Configuration struct {
 	Port             string
 	ConnectionString string
+	DatabaseName     string
 }
 
 func GetConfiguration() Configuration {
@@ -72,7 +73,7 @@ func GetConfiguration() Configuration {
 	// Get the PORT and CONNECTION_STRING environment variables
 	port := os.Getenv("PORT")
 	connectionString := os.Getenv("CONNECTION_STRING") + "/?retryWrites=true&w=majority&appName=dev"
-
+	databaseName := os.Getenv("DATABASE_NAME")
 	if port == "" {
 		log.Fatal("PORT must be set in the .env file")
 	}
@@ -87,6 +88,7 @@ func GetConfiguration() Configuration {
 	configuration := Configuration{
 		port,
 		connectionString,
+		databaseName,
 	}
 
 	return configuration
